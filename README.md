@@ -14,7 +14,7 @@ Supported by all Librespeed frontends, though some features are missing (see bel
 - [x] IP Address, ISP
 - [x] Multiple Points of Test (optional)
 - [x] Compatible with PHP frontend predefined endpoints (with `.php` suffixes)
-- [ ] Distance from server (optional)
+- [x] Distance from server (optional)
 - [ ] Telemetry (optional)
 - [ ] Results sharing (optional)
 - [ ] [Proxy Protocol](https://www.haproxy.org/download/2.3/doc/proxy-protocol.txt)?
@@ -55,6 +55,10 @@ cargo build --release
 ```sh
 # your ipinfo.io API token
 IPINFO_TOKEN=
+# your server's latitude
+SERVER_LATITUDE=1
+# your server's longitude
+SERVER_LONGITUDE=1
 # the port to bind to
 ROCKET_PORT=8000
 # the bind address (0.0.0.0 is all interfaces)

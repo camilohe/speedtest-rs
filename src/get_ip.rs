@@ -2,11 +2,11 @@ use ipinfo::{IpDetails, IpInfo, IpInfoConfig};
 use regex::Regex;
 use rocket::serde::{json::Json, Serialize};
 use rocket_client_addr::ClientRealAddr;
-
 use std::env::var;
+use std::fmt;
 
 use crate::serialized_ip_info::IpDetailsDef;
-use crate::util::get_ip_type;
+use crate::util::{get_client_server_distance_string, get_ip_type};
 
 #[derive(FromFormField, PartialEq)]
 pub enum Distance {
@@ -15,7 +15,16 @@ pub enum Distance {
     Nm,
 }
 
-#[allow(dead_code)]
+impl fmt::Display for Distance {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            Distance::Km => write!(f, "km"),
+            Distance::Mi => write!(f, "mi"),
+            Distance::Nm => write!(f, "NM"),
+        }
+    }
+}
+
 #[derive(FromForm)]
 pub struct GetIPOptions {
     #[field(default = true)]
@@ -67,6 +76,11 @@ pub async fn get_ip(client_addr: &ClientRealAddr, opts: GetIPOptions) -> Json<Ge
 
         if !ipinfo.country.is_empty() {
             isp = format!("{}, {}", &isp, &ipinfo.country);
+        }
+
+        if !ipinfo.loc.is_empty() {
+            let distance = get_client_server_distance_string(ipinfo.loc, opts.distance);
+            isp = format!("{} ({})", &isp, &distance);
         }
 
         result.processed_string = Some(format!("{} - {}", &result.processed_string.unwrap(), &isp));
