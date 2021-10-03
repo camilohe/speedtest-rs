@@ -7,6 +7,7 @@ extern crate serde_with;
 pub mod empty;
 pub mod garbage;
 pub mod get_ip;
+pub mod haversine;
 pub mod serialized_ip_info;
 pub mod util;
 
@@ -26,7 +27,7 @@ use get_ip::*;
 async fn main() -> Result<(), Box<dyn Error>> {
     dotenv().ok();
 
-    let cors = setup_cors().await.unwrap();
+    let cors = setup_cors().await?;
     let routes = routes![get_ip::get_ip, get_backend_ip_php];
 
     let garbage_routes = routes![
@@ -40,33 +41,23 @@ async fn main() -> Result<(), Box<dyn Error>> {
         empty::empty,
         backend_empty,
         get_empty,
-        empty_options,
         empty_php,
         backend_empty_php,
         get_backend_empty_php
     ];
 
+    let routes = vec![routes, garbage_routes, empty_routes].concat();
+
+    let mut rocketship = rocket::build().attach(cors).mount("/", routes);
+
     let asset_path = relative!("assets");
     if Path::new(asset_path).exists() {
         let fileserver = FileServer::from(asset_path);
 
-        rocket::build()
-            .attach(cors)
-            .mount("/", routes)
-            .mount("/", empty_routes)
-            .mount("/", garbage_routes)
-            .mount("/", fileserver)
-            .launch()
-            .await?;
-    } else {
-        rocket::build()
-            .attach(cors)
-            .mount("/", routes)
-            .mount("/", empty_routes)
-            .mount("/", garbage_routes)
-            .launch()
-            .await?;
+        rocketship = rocketship.mount("/", fileserver);
     }
+
+    rocketship.launch().await?;
 
     Ok(())
 }

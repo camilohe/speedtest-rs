@@ -19,7 +19,7 @@ pub async fn garbage(opts: GarbageOptions) -> ByteStream![Vec<u8>] {
 
     let chunks = match opts.ckSize {
         i if i > 1024 => 1024,
-        _ => opts.ckSize,
+        i => i,
     };
 
     ByteStream! {

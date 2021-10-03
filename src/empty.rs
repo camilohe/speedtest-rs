@@ -11,20 +11,14 @@ pub struct EmptyResponder {
 
 #[post("/empty", data = "<data>")]
 pub async fn empty(data: Data<'_>) -> EmptyResponder {
-    match data.open(1.gigabytes()).stream_to(io::sink()).await {
-        Ok(_) => print!(""),
-        Err(_) => print!(""),
-    };
+    match data.open(25.megabytes()).stream_to(io::sink()).await {
+        _ => {}
+    }
 
     EmptyResponder {
         inner: (),
         connection: Header::new("Connection", "keep-alive"),
     }
-}
-
-#[options("/empty")]
-pub async fn empty_options() -> Status {
-    Status::NoContent
 }
 
 #[post("/backend/empty", data = "<data>")]

@@ -14,4 +14,3 @@ ipinfo = "0.2.0"
 serde_with = { version = "1.10.0", features = ["json"] }
 rocket_cors = { git = "https://github.com/lawliet89/rocket_cors", rev = "a062933" }
 dotenv = "0.15.0"
-haversine = "0.2.1"
