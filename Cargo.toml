@@ -1,0 +1,16 @@
+[package]
+name = "speedtest-rs"
+version = "0.1.0"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rocket = { version = "0.5.0-rc.1", features = ["json"] }
+rand = { version = "0.8.4" }
+rocket-client-addr = "0.5.0"
+regex = "1.5.4"
+ipinfo = "0.2.0"
+serde_with = { version = "1.10.0", features = ["json"] }
+rocket_cors = { git = "https://github.com/lawliet89/rocket_cors", rev = "a062933" }
+dotenv = "0.15.0"
