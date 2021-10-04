@@ -13,9 +13,8 @@ pub mod util;
 
 use dotenv::dotenv;
 use std::error::Error;
-use std::path::Path;
 
-use rocket::fs::{relative, FileServer};
+use rocket::fs::FileServer;
 use rocket::http::Method;
 use rocket_cors::{AllowedHeaders, AllowedOrigins, Cors};
 
@@ -50,8 +49,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     let mut rocketship = rocket::build().attach(cors).mount("/", routes);
 
-    let asset_path = relative!("assets");
-    if Path::new(asset_path).exists() {
+    let asset_path = std::env::current_dir().unwrap().join("assets");
+    if asset_path.exists() {
         let fileserver = FileServer::from(asset_path);
 
         rocketship = rocketship.mount("/", fileserver);
